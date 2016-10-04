@@ -4,7 +4,7 @@
 #for unicode problems, don't work here:
 #from __future__ import unicode_literals
 
-import httplib, urllib, base64, json, ast, csv, codecs, time, subprocess
+import httplib, urllib, base64, json, ast, csv, codecs, time, subprocess, os
 
 import sys
 reload(sys)
@@ -75,12 +75,15 @@ wr = csv.writer(myfile1, quoting=csv.QUOTE_ALL)
 for k in range(len(data)):
     wr.writerow(data[k])
 
+# Store data to maps folder
+prevName = '%s.csv' % (ville + '_' + categorie + '_' + debut)
+newName = 'maps/%s.csv' % (ville + '_' + categorie + '_' + debut)
+os.rename(prevName,newName)
 
 # Create curlCommand file with curl command that upload datafile to online carto account
 myfile2 = open('curlCommand.sh', 'w')
-myfile2.write('curl -v -F file=@/home/lucas/Documents/dropthebase/allEvents_API/' + ville + '_' + categorie + '_' + debut + '.csv "https://ldlucasdosso.carto.com/api/v1/imports/?api_key=fc1d0cf1c7b6bc8bd84d9a74e2f73bd7312f3cf2"');
+myfile2.write('curl -v -F file=@/home/lucas/Documents/gigzrProject/maps/' + ville + '_' + categorie + '_' + debut + '.csv "https://ldlucasdosso.carto.com/api/v1/imports/?api_key=fc1d0cf1c7b6bc8bd84d9a74e2f73bd7312f3cf2"');
 myfile2.close()
-
 
 # Execute curlCommand in command line
 subprocess.call('chmod +x curlCommand.sh | ./curlCommand.sh', shell=True)
